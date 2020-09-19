@@ -18,10 +18,8 @@ install() {
   yes | sudo pacman -S "${@}" || true
 }
 
-uninstall_packages() {
-  info "Uninstalling Packages"
-
-  yes | sudo pacman -Rsn firefox || true
+uninstall() {
+  yes | sudo pacman -Rsn "${@}" || true
 }
 
 setup_environment() {
@@ -32,6 +30,13 @@ setup_environment() {
   append "export PATH=\"\${PATH}:${HOME}/.local/bin\"" "${HOME}/.bashrc"
   sudo pacman-mirrors --country United_Kingdom && yes | sudo pacman -Syyu || true
   install bash-completion curl git tar unzip
+}
+
+uninstall_packages() {
+  info "Uninstalling Packages"
+
+  uninstall firefox 
+  uninstall midori
 }
 
 install_fonts() {
@@ -128,6 +133,7 @@ install_vscode() {
     "javascript.preferences.quoteStyle": "double",
     "telemetry.enableCrashReporter": false,
     "telemetry.enableTelemetry": false,
+    "window.zoomLevel": -2,
     "workbench.editor.closeOnFileDelete": true,
     "workbench.iconTheme": "material-icon-theme",
     "material-icon-theme.activeIconPack": "none",
@@ -144,8 +150,8 @@ EOT
 }
 
 main() {
-  uninstall_packages
   setup_environment
+  uninstall_packages
   install_fonts
   install_chrome
   install_docker
