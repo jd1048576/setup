@@ -30,7 +30,7 @@ setup_environment() {
   echo "${USER} ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/${USER}"
   mkdir -p "${LOCAL_BIN}"
   append "export PATH=\"\${PATH}:${HOME}/.local/bin\"" "${HOME}/.bashrc"
-  sudo pacman-mirrors --country United_Kingdom && sudo pacman -Syyu
+  sudo pacman-mirrors --country United_Kingdom && yes | sudo pacman -Syyu || true
   install bash-completion curl git tar unzip
 }
 
