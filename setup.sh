@@ -15,13 +15,14 @@ append() {
 }
 
 install() {
-  yes | sudo pacman -S "${@}" || true
+  sudo apt update -qq
+  sudo apt install -qqy --no-install-recommends "${@}"
 }
 
 uninstall_packages() {
   info "Uninstalling Packages"
 
-  yes | sudo pacman -Rsn firefox || true
+  sudo apt autoremove --purge -qqy firefox popularity-contest snapd
 }
 
 setup_environment() {
@@ -30,7 +31,6 @@ setup_environment() {
   echo "${USER} ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/${USER}"
   mkdir -p "${LOCAL_BIN}"
   append "export PATH=\"\${PATH}:${HOME}/.local/bin\"" "${HOME}/.bashrc"
-  sudo pacman-mirrors --country United_Kingdom && sudo pacman -Syyu
   install bash-completion curl git tar unzip
 }
 
@@ -51,16 +51,19 @@ install_fonts() {
 install_chrome() {
   info "Installing Chrome"
 
-  install chromium
+  curl -fsSL "https://dl.google.com/linux/linux_signing_key.pub" | sudo apt-key add -
+  echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+  install google-chrome-stable
 }
 
 install_docker() {
   info "Installing Docker"
 
-  install docker
+  curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | sudo apt-key add -
+  echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+  install docker-ce docker-ce-cli containerd.io
 
   sudo usermod -aG docker "${USER}"
-  sudo systemctl restart docker
   sudo systemctl enable docker
 }
 
@@ -99,6 +102,8 @@ install_terraform() {
 install_vscode() {
   info "Installing Visual Studio Code"
 
+  curl -fsSL "https://packages.microsoft.com/keys/microsoft.asc" | sudo apt-key add -
+  echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
   install code
 
   local install
@@ -115,7 +120,7 @@ install_vscode() {
       code --install-extension "${extension}"
   done
 
-  tee "${HOME}/.config/Code - OSS/User/settings.json" <<EOT
+  tee "${HOME}/.config/Code/User/settings.json" <<EOT
   {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
