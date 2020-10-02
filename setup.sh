@@ -133,7 +133,6 @@ install_vscode() {
     "javascript.preferences.quoteStyle": "double",
     "telemetry.enableCrashReporter": false,
     "telemetry.enableTelemetry": false,
-    "window.zoomLevel": -2,
     "workbench.editor.closeOnFileDelete": true,
     "workbench.iconTheme": "material-icon-theme",
     "material-icon-theme.activeIconPack": "none",
