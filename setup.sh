@@ -85,9 +85,7 @@ install_node() {
 
   local version
   version=$(curl -fsSL "https://api.github.com/repos/nvm-sh/nvm/releases/latest" | grep -Po '"tag_name": "v\K.*?(?=")')
-  curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/v${version}/install.sh" | bash
-  # shellcheck disable=SC1090
-  source "${HOME}/.nvm/nvm.sh" && nvm install --lts
+  curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/v${version}/install.sh" | NODE_VERSION="--lts" bash
   npm i -g eslint prettier
 }
 
